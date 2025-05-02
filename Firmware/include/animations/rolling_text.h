@@ -15,6 +15,8 @@ static uint8_t current_letter;
 static uint8_t current_letter_col;
 static uint32_t last_update;
 
+static uint8_t ring_led;
+
 
 static void rolling_text_init(void) {
     // setup your animation
@@ -22,6 +24,8 @@ static void rolling_text_init(void) {
 
     current_letter = 0;
     current_letter_col = 0;
+
+    ring_led = 0;
 }
 
 static void rolling_text_tick() {
@@ -30,7 +34,7 @@ static void rolling_text_tick() {
     // but must not take more than 50ms!
     // (otherwise the button will not properly work anymore)
 
-    if (millis() - last_update > 250) {
+    if (millis() - last_update > 200) {
         last_update = millis();
 
         // shift out current pixels
@@ -42,15 +46,21 @@ static void rolling_text_tick() {
         }
 
         for (uint8_t y = 0; y < 6; y++) {
-            uint8_t byte = font[display_string[current_letter]][y];
-            uint8_t bit = byte >> (4 + current_letter_col);
-            matrixSetPixel(5, y+1, MAX_BRIGHTNESS * (bit & 1));
+            uint8_t byte = font[(display_string[current_letter] - 32) * 6 + y];
+            uint8_t bit = byte >> (8 - current_letter_col);
+            matrixSetPixel(5, y + 1, MAX_BRIGHTNESS * (bit & 1));
         }
 
         current_letter_col++;
         if (current_letter_col == 4) {
             current_letter_col = 0;
             current_letter = (current_letter + 1) % display_string_length;
+        }
+
+        if (current_letter_col % 2 == 0) {
+            matrixSetPixel(ring_led, 6, 0);
+            ring_led = (ring_led + 1) % 6;
+            matrixSetPixel(ring_led, 6, MAX_BRIGHTNESS);
         }
 
     }
