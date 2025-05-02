@@ -1,0 +1,27 @@
+#ifndef _ANIMATION_H
+#define _ANIMATION_H
+
+#include <stdint.h>
+#include <stddef.h>
+
+typedef void (*animation_init_fn)(void);
+typedef void (*animation_tick_fn)(void);
+typedef void (*animation_on_press_fn)(uint8_t count);
+
+typedef struct {
+    animation_init_fn init;
+    animation_tick_fn tick;
+    animation_on_press_fn on_press;
+} animation_t;
+
+// Max number of animations
+#define MAX_ANIMATIONS 16
+
+// Called by animations to register themselves
+void register_animation(const animation_t* anim);
+
+// Accessor for animation manager
+animation_t* get_animation(size_t index);
+size_t get_animation_count(void);
+
+#endif
