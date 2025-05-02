@@ -8,8 +8,8 @@
 #include "stdio.h"
 
 // you can declare variables for your animation here
-static const char* display_string = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG   ";
-static const uint8_t display_string_length = 46;
+static const char* display_string = "DEZENTRALE   ";
+static const uint8_t display_string_length = 13;
 
 static uint8_t current_letter;
 static uint8_t current_letter_col;
