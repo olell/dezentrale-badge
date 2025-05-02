@@ -6,8 +6,6 @@
 // store all WIDTH*HEIGHT pixels (to the next integer bytes)
 uint8_t pixbuf[HEIGHT][WIDTH];
 
-uint32_t conf_register_clean = 0;
-
 /**
  * @brief Initializes the matrix
  */
@@ -40,12 +38,24 @@ uint8_t matrixGetPixel(uint8_t x, uint8_t y) {
     return pixbuf[y][x];
 }
 
+/**
+ * @brief clears the matrix
+ */
+void matrixClear() {
+    for (uint8_t y = 0; y < HEIGHT; y ++){
+        for (uint8_t x = 0; x < HEIGHT; x ++) {
+            matrixSetPixel(x, y, 0);
+        }
+    }
+}
+
 uint32_t conf_register;
 uint32_t out_register;
 uint8_t pin_index;
 uint8_t col;
 uint8_t row;
 uint8_t tmp;
+uint8_t cur_pix;
 
 /**
  * @brief Displays the matrix contents
@@ -53,32 +63,35 @@ uint8_t tmp;
 void matrixDisplay() {
     // 4 Bit for each IO pin in the conf register
     // set the 1st bit to make it equiv to (GPIO_Speed_10MHz | GPIO_CNF_OUT_PP)
-    pin_index = col;
-    if (pin_index >= 5) pin_index ++;
-    conf_register = conf_register_clean;
-    conf_register &= ~(0xf << (4*pin_index));
+
+    cur_pix = matrixGetPixel(row, col);
+
+    tmp = col;
+    if (tmp >= 5) tmp ++;
+    conf_register = (uint32_t)2<<(4*tmp);
+    
+    if (row == col) pin_index ++;
+    if (pin_index == 5) pin_index ++;
+
     conf_register |= (uint32_t)2<<(4*pin_index);
+    out_register = (uint32_t)1 << pin_index;
     
-    out_register = 0;
-    pin_index = 0;
-    row = 0;
-
-    while (row < WIDTH) {
-        if (row == col) pin_index ++;
-        if (pin_index == 5) pin_index ++;
-
-        if (matrixGetPixel(row, col)) {
-            conf_register &= ~(0xf << (4*pin_index));
-            conf_register |= (uint32_t)2<<(4*pin_index);
-            out_register |= (uint32_t)1 << pin_index;
-        }
-        row ++;
-        pin_index ++;
-    }
-
     GPIOC->CFGLR = conf_register;
-    GPIOC->OUTDR = out_register;
+    // soft-pwm
+    for (tmp = 0; tmp < MAX_BRIGHTNESS; tmp ++)
+        GPIOC->OUTDR = (tmp < cur_pix) ? out_register : 0;
+
+    GPIOC->OUTDR = 0;
     
-    col ++;
-    if (col >= HEIGHT) col = 0;
+    // prepare row/col addrs for next call
+    row ++;
+    pin_index ++;
+    if (row >= WIDTH) {
+        row = 0;
+        pin_index = 0;
+        col ++;
+        if (col >= HEIGHT) {
+            col = 0;
+        }
+    }
 }

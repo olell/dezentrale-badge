@@ -8,6 +8,7 @@
 
 // include animations
 #include "animations/cycle.h"
+#include "animations/pulse.h"
 
  // max milliseconds between two pressed to be counted as multi-press
 #define MULTI_PRESS_SPEED 400
@@ -30,6 +31,7 @@ int main() {
     standby_gpio_assign_pin(STANDBY_GPIO_PORT_D, 4, STANDBY_TRIGGER_DIRECTION_FALLING);
 
     // register animations
+    register_animation(&pulse_animation);
     register_animation(&cycle_animation);
 
     if (get_animation_count() == 0) {
@@ -39,6 +41,7 @@ int main() {
 
     current_animation_idx = 0;
     current_animation = get_animation(current_animation_idx);
+    current_animation->init();
 
     for (;;) {
         // repeat the loop until it returns 0
@@ -101,6 +104,7 @@ uint8_t loop() {
             return 0;
         }
         else if (btn_cnt == 3) { // next animation
+            matrixClear();
             current_animation_idx = (current_animation_idx + 1) % get_animation_count();
             current_animation = get_animation(current_animation_idx);
             current_animation->init();

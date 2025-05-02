@@ -31,10 +31,13 @@ Arms:
 #define WIDTH 6
 #define HEIGHT 7
 
+#define MAX_BRIGHTNESS 8
+
 void matrixInit();
 void matrixPowerOff();
 void matrixSetPixel(uint8_t x, uint8_t y, uint8_t v);
 uint8_t matrixGetPixel(uint8_t x, uint8_t y);
 void matrixDisplay();
+void matrixClear();
 
 #endif

@@ -4,7 +4,7 @@
 #include "matrix.h"
 #include <stdio.h>
 
-const uint32_t systick_interval = ((uint32_t)FUNCONF_SYSTEM_CORE_CLOCK / 10000); // 100us
+const uint32_t systick_interval = ((uint32_t)FUNCONF_SYSTEM_CORE_CLOCK / 100000); // 10us
 
 volatile uint32_t systick_counter;
 
@@ -32,15 +32,15 @@ void SysTick_Handler(void) {
 }
 
 /**
- * @brief Returns the milliseconds since systickInit() with 1 decimal place
+ * @brief Returns the milliseconds since systickInit() with 2 decimal place
  */
 float f_millis() {
-    return (float)systick_counter / 10.0;
+    return (float)systick_counter / 100.0;
 }
 
 /**
  * @brief Returns the milliseconds since systickInit()
  */
 uint32_t millis() {
-    return systick_counter / 10;
+    return systick_counter / 100;
 }

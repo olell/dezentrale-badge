@@ -32,14 +32,14 @@ static void cycle_tick() {
     if (x >= WIDTH) {
         x = 0;
         y ++;
-        if (y >= HEIGHT - 1) {
+        if (y >= HEIGHT) {
             y = 0;
             v = 1 - v;
         }
     }
 
     // set the pixel @ x, y to v
-    matrixSetPixel(x, y, v);
+    matrixSetPixel(x, y, v * MAX_BRIGHTNESS);
 
 }
 
