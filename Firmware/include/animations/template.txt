@@ -1,0 +1,33 @@
+#ifndef _ANIM_TEMPLATE_H
+#define _ANIM_TEMPLATE_H
+
+#include "systick.h" // for millis()
+#include "animation.h" // for animation_t
+#include "matrix.h" // for matrix function
+
+// you can declare variables for your animation here
+
+static void template_init(void) {
+    // setup your animation
+}
+
+static void template_tick() {
+    // draw something to matrix
+    // this code is allowed to be a little bit blocking
+    // but must not take more than 50ms!
+    // (otherwise the button will not properly work anymore)
+
+    // non-blocking variant to do something every 100ms
+}
+
+static void template_on_press(uint8_t count) {
+    // handle $count button presses
+}
+
+static const animation_t template_animation = {
+    .init = template_init,
+    .tick = template_tick,
+    .on_press = template_on_press
+};
+
+#endif

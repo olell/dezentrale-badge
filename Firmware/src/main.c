@@ -9,6 +9,7 @@
 // include animations
 #include "animations/cycle.h"
 #include "animations/pulse.h"
+#include "animations/rolling_text.h"
 
  // max milliseconds between two pressed to be counted as multi-press
 #define MULTI_PRESS_SPEED 400
@@ -31,6 +32,7 @@ int main() {
     standby_gpio_assign_pin(STANDBY_GPIO_PORT_D, 4, STANDBY_TRIGGER_DIRECTION_FALLING);
 
     // register animations
+    register_animation(&rolling_text_animation);
     register_animation(&pulse_animation);
     register_animation(&cycle_animation);
 

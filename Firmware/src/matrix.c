@@ -25,8 +25,6 @@ void matrixPowerOff() {
  */
 void matrixSetPixel(uint8_t x, uint8_t y, uint8_t v) {
     if (x >= WIDTH || y >= HEIGHT) return;
-    if (x == 0 && (y == 0 || y == 5)) return; // non-existing leds
-    if (x == 5 && (y == 0 || y == 5)) return; // non-existing leds
     pixbuf[y][x] = v;
 }
 
@@ -64,7 +62,12 @@ void matrixDisplay() {
     // 4 Bit for each IO pin in the conf register
     // set the 1st bit to make it equiv to (GPIO_Speed_10MHz | GPIO_CNF_OUT_PP)
 
+
     cur_pix = matrixGetPixel(row, col);
+
+    if (col == 0 && (row == 0 || row == 5)) cur_pix = 0; // non-existing leds
+    if (col == 5 && (row == 0 || row == 5)) cur_pix = 0; // non-existing leds
+
 
     tmp = col;
     if (tmp >= 5) tmp ++;
