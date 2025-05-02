@@ -31,7 +31,7 @@ Arms:
 #define WIDTH 6
 #define HEIGHT 7
 
-#define MAX_BRIGHTNESS 8
+#define MAX_BRIGHTNESS 15
 
 void matrixInit();
 void matrixPowerOff();
