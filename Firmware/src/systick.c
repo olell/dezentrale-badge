@@ -6,6 +6,7 @@
 
 const uint32_t systick_interval = ((uint32_t)FUNCONF_SYSTEM_CORE_CLOCK / 100000); // 10us
 
+volatile uint32_t systick_divider;
 volatile uint32_t systick_counter;
 
 /**
@@ -27,20 +28,18 @@ void SysTick_Handler(void) __attribute__((interrupt));
 void SysTick_Handler(void) {
 	SysTick->CMP += systick_interval;
 	SysTick->SR = 0x00000000;
-    systick_counter ++;
-    matrixDisplay();
-}
 
-/**
- * @brief Returns the milliseconds since systickInit() with 2 decimal place
- */
-float f_millis() {
-    return (float)systick_counter / 100.0;
+    if (++ systick_divider == 100) {
+        systick_divider = 0;
+        systick_counter ++;
+    }
+    
+    matrixDisplay();
 }
 
 /**
  * @brief Returns the milliseconds since systickInit()
  */
 uint32_t millis() {
-    return systick_counter / 100;
+    return systick_counter;
 }
