@@ -5,7 +5,6 @@
 
 void systickInit();
 void systickClear();
-float f_millis();
 uint32_t millis();
 
 #endif
