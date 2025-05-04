@@ -6,10 +6,43 @@
 // store all WIDTH*HEIGHT pixels (to the next integer bytes)
 uint8_t pixbuf[HEIGHT][WIDTH];
 
+// this array contains pre calculated values for the conf register
+// for every pixel, which are calculated once on init to save
+// calculation time while displaying the pixels
+uint32_t conf_reg_c_precalc[HEIGHT][WIDTH];
+uint32_t out_reg_c_precalc[HEIGHT][WIDTH];
+
+uint8_t col;
+uint8_t row;
+
 /**
  * @brief Initializes the matrix
  */
 void matrixInit() {
+    // pre calculate conf register
+    uint8_t row_pin_index = 0, col_pin_index = 0;
+    for (row = 0; row < HEIGHT; row ++) {
+        row_pin_index = row;
+        if (row_pin_index >= 5) row_pin_index ++; // pin PC5 doesn't exist
+
+        for (col = 0; col < WIDTH; col ++) {
+            conf_reg_c_precalc[row][col] = 0; // clear the register
+            if ((row == 0 || row == 5) && (col == 0 || col == 5)) continue; // non-existing leds
+
+            col_pin_index = col;
+            if (col_pin_index >= row_pin_index) col_pin_index ++;
+            if (col_pin_index >= 5) col_pin_index ++;
+
+            conf_reg_c_precalc[row][col] = (uint32_t)2<<(4*row_pin_index) | // row pin as output
+                                           (uint32_t)2<<(4*col_pin_index);  // col pin as output
+            
+            out_reg_c_precalc[row][col] = (uint32_t)1<<col_pin_index; // col pin high
+
+            
+        }
+    }
+    row = 0;
+    col = 0;
 }
 
 /**
@@ -47,11 +80,8 @@ void matrixClear() {
     }
 }
 
-uint32_t conf_register;
+
 uint32_t out_register;
-uint8_t pin_index;
-uint8_t col;
-uint8_t row;
 uint8_t tmp;
 uint8_t cur_pix;
 
@@ -59,42 +89,22 @@ uint8_t cur_pix;
  * @brief Displays the matrix contents
  */
 void matrixDisplay() {
-    // 4 Bit for each IO pin in the conf register
-    // set the 1st bit to make it equiv to (GPIO_Speed_10MHz | GPIO_CNF_OUT_PP)
-
-
-    cur_pix = matrixGetPixel(row, col);
-
-    if (col == 0 && (row == 0 || row == 5)) cur_pix = 0; // non-existing leds
-    if (col == 5 && (row == 0 || row == 5)) cur_pix = 0; // non-existing leds
-
-
-    tmp = col;
-    if (tmp >= 5) tmp ++;
-    conf_register = (uint32_t)2<<(4*tmp);
+    GPIOC->CFGLR = conf_reg_c_precalc[row][col];
+    out_register = out_reg_c_precalc[row][col];
     
-    if (row == col) pin_index ++;
-    if (pin_index == 5) pin_index ++;
-
-    conf_register |= (uint32_t)2<<(4*pin_index);
-    out_register = (uint32_t)1 << pin_index;
+    cur_pix = pixbuf[row][col];
     
-    GPIOC->CFGLR = conf_register;
-    // soft-pwm
-    for (tmp = 0; tmp < MAX_BRIGHTNESS; tmp ++)
+    // soft-pwm 
+    for (tmp = 0; tmp <= MAX_BRIGHTNESS; tmp ++) {
         GPIOC->OUTDR = (tmp < cur_pix) ? out_register : 0;
+        asm volatile( "c.nop;c.nop;" );
+    }
 
-    GPIOC->OUTDR = 0;
-    
     // prepare row/col addrs for next call
-    row ++;
-    pin_index ++;
-    if (row >= WIDTH) {
-        row = 0;
-        pin_index = 0;
-        col ++;
-        if (col >= HEIGHT) {
-            col = 0;
+    if (++col == WIDTH) {
+        col = 0;
+        if (++row == HEIGHT) {
+            row = 0;
         }
     }
 }
