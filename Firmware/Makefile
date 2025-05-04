@@ -5,7 +5,7 @@ CH32FUN:=../../ch32fun/ch32fun
 TARGET_MCU:=CH32V003
 
 ADDITIONAL_C_FILES+=src/matrix.c src/animation.c src/systick.c
-EXTRA_CFLAGS:=-I./include
+EXTRA_CFLAGS:=-I./include -Ofast
 
 include $(CH32FUN)/ch32fun.mk
 
