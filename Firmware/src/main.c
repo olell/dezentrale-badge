@@ -119,12 +119,14 @@ int main() {
         // disable the systick & turn off the matrix
         systickClear();
         matrixPowerOff();
+        NVIC_DisableIRQ(EXTI7_0_IRQn);
 
         // enter standby, it will hold until the button gets pressed
 		standby_enter();
 
         // re-enables the systick for millis() and matrix updates
         systickInit();
+        NVIC_EnableIRQ(EXTI7_0_IRQn);
         Delay_Ms(1000);
     }
 }
