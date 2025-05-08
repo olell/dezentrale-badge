@@ -12,6 +12,7 @@ typedef struct {
     animation_init_fn init;
     animation_tick_fn tick;
     animation_on_press_fn on_press;
+    uint16_t tick_interval;
 } animation_t;
 
 // Max number of animations
@@ -21,7 +22,7 @@ typedef struct {
 void register_animation(const animation_t* anim);
 
 // Accessor for animation manager
-animation_t* get_animation(size_t index);
+const animation_t* get_animation(size_t index);
 size_t get_animation_count(void);
 
 #endif

@@ -1,3 +1,13 @@
+/**
+  * This can be used as a template to create custom animations.
+  * Simply replace the word "template" with your animation name
+  * and create a file which is also called like your animation.
+  *
+  * After creating an animation include it like the other animations
+  * in the main.c file and register it at 
+  *
+**/
+
 #ifndef _ANIM_TEMPLATE_H
 #define _ANIM_TEMPLATE_H
 
@@ -6,28 +16,32 @@
 #include "matrix.h" // for matrix function
 
 // you can declare variables for your animation here
+// please prefix them with "animation_name_" to prevent
+// collisions with other animations
+uint8_t template_x; // example variable
 
 static void template_init(void) {
     // setup your animation
+    anim_template_x = 0;
 }
 
 static void template_tick() {
-    // draw something to matrix
-    // this code is allowed to be a little bit blocking
-    // but must not take more than 50ms!
-    // (otherwise the button will not properly work anymore)
+    // draw something to matrix, this function
+    // is executed every `tick_interval` (see below) milliseconds
 
-    // non-blocking variant to do something every 100ms
+    // you can use `matrixSetPixel(x, y, value)` to set a specific pixel
+    // you can use `matrixClear()` to set all pixels to off
 }
 
 static void template_on_press(uint8_t count) {
-    // handle $count button presses
+    // handle `count` amount of button presses
 }
 
 static const animation_t template_animation = {
     .init = template_init,
     .tick = template_tick,
-    .on_press = template_on_press
+    .on_press = template_on_press,
+    .tick_interval = 100
 };
 
 #endif

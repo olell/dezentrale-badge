@@ -6,7 +6,7 @@
 #include "ch32v003_standby.h"
 #include "animation.h"
 
-// include animations
+// include animations here, do not forget to register them below
 #include "animations/cycle.h"
 #include "animations/pulse.h"
 #include "animations/rolling_text.h"
@@ -16,7 +16,7 @@
 #define MULTI_PRESS_SPEED 500
 
 size_t current_animation_idx;
-animation_t* current_animation;
+const animation_t* current_animation;
 
 // button interrupt handler
 uint32_t btn_last_press = 0;
@@ -71,7 +71,8 @@ int main() {
 
     NVIC_EnableIRQ( EXTI7_0_IRQn );
 
-    // register animations
+    // register animations here, the animations are cycled through
+    // by tripple pressing the button in this order
     register_animation(&face_animation);
     register_animation(&rolling_text_animation);
     register_animation(&pulse_animation);
@@ -93,7 +94,7 @@ int main() {
             // Matrix animation
             current_animation->tick();
 
-            Delay_Ms(10); // sleep 10ms to reduce cpu load
+            Delay_Ms(current_animation->tick_interval); // sleep 10ms to reduce cpu load
             
             // btn pressed at least once and more than MULTI_PRESS_SPEED ago
             // press count is captured by the interrupt handler
