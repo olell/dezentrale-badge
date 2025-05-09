@@ -9,7 +9,7 @@ void register_animation(const animation_t* anim) {
     }
 }
 
-animation_t* get_animation(size_t index) {
+const animation_t* get_animation(size_t index) {
     if (index >= animation_count) return NULL;
     return animations[index];
 }

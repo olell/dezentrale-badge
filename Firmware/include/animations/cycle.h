@@ -6,40 +6,29 @@
 #include "matrix.h" // for matrix function
 
 // you can declare variables for your animation here
-static uint8_t x, y, v;
-static uint32_t last_update;
+static uint8_t cycle_x, cycle_y, cycle_v;
 
 static void cycle_init(void) {
     // setup your animation
-    x = 0;
-    y = 0;
-    v = 1;
-    last_update = millis();
+    cycle_x = 0;
+    cycle_y = 0;
+    cycle_v = 1;
 }
 
 static void cycle_tick() {
     // draw something to matrix
-    // this code is allowed to be a little bit blocking
-    // but must not take more than 50ms!
-    // (otherwise the button will not properly work anymore)
 
-    // non-blocking variant to do something every 100ms
-    if(millis() - last_update > 100) {
-        x ++;
-        last_update = millis();
-    }
-
-    if (x >= WIDTH) {
-        x = 0;
-        y ++;
-        if (y >= HEIGHT) {
-            y = 0;
-            v = 1 - v;
+    if (++cycle_x >= WIDTH) {
+        cycle_x = 0;
+        
+        if (++cycle_y >= HEIGHT) {
+            cycle_y = 0;
+            cycle_v = 1 - cycle_v;
         }
     }
 
     // set the pixel @ x, y to v
-    matrixSetPixel(x, y, v * MAX_BRIGHTNESS);
+    matrixSetPixel(cycle_x, cycle_y, cycle_v * MAX_BRIGHTNESS);
 
 }
 
@@ -50,7 +39,8 @@ static void cycle_on_press(uint8_t count) {
 static const animation_t cycle_animation = {
     .init = cycle_init,
     .tick = cycle_tick,
-    .on_press = cycle_on_press
+    .on_press = cycle_on_press,
+    .tick_interval = 100
 };
 
 #endif
