@@ -13,7 +13,7 @@ include $(CH32FUN)/ch32fun.mk
 #FLASH_COMMAND:=$(MINICHLINK)/minichlink -3 -C ardulink -c /dev/tty.usbmodem123451 -w $(TARGET).bin 0x08000000 -T
 
 # using usb bootloader
-FLASH_COMMAND:=$(MINICHLINK)/minichlink -C b003boot -a -w $(TARGET).bin flash
+FLASH_COMMAND:=$(MINICHLINK)/minichlink -C b003boot -e -w $(TARGET).bin flash -b
 
 flash : cv_flash
 clean : cv_clean

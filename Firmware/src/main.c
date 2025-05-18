@@ -13,6 +13,7 @@
 #include "animations/rolling_text.h"
 #include "animations/face.h"
 #include "animations/fade.h"
+#include "animations/bootloader.h"
 
  // max milliseconds between two pressed to be counted as multi-press
 #define MULTI_PRESS_SPEED 500
@@ -77,9 +78,9 @@ int main() {
 
     // register animations here, the animations are cycled through
     // by tripple pressing the button in this order
+    register_animation(&rolling_text_animation);
     register_animation(&fade_animation);
     register_animation(&face_animation);
-    register_animation(&rolling_text_animation);
     register_animation(&pulse_animation);
     register_animation(&cycle_animation);
 
@@ -105,7 +106,11 @@ int main() {
             // btn pressed at least once and more than MULTI_PRESS_SPEED ago
             // press count is captured by thea interrupt handler
             if (btn_cnt > 0 && millis() - btn_press > MULTI_PRESS_SPEED) {
-                if (btn_cnt == 4) { // go to sleep
+                if (btn_cnt == 5) { // go to bootloader (?)
+                    current_animation = &bootloader_animation;
+                    current_animation->init();
+                }
+                else if (btn_cnt == 4) { // go to sleep
                     btn_cnt = 0;
                     break;
                 }
