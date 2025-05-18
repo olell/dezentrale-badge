@@ -5,12 +5,14 @@
 #include "systick.h"
 #include "ch32v003_standby.h"
 #include "animation.h"
+#include "touch.h"
 
 // include animations here, do not forget to register them below
 #include "animations/cycle.h"
 #include "animations/pulse.h"
 #include "animations/rolling_text.h"
 #include "animations/face.h"
+#include "animations/fade.h"
 
  // max milliseconds between two pressed to be counted as multi-press
 #define MULTI_PRESS_SPEED 500
@@ -71,8 +73,11 @@ int main() {
 
     NVIC_EnableIRQ( EXTI7_0_IRQn );
 
+    touchInit();
+
     // register animations here, the animations are cycled through
     // by tripple pressing the button in this order
+    register_animation(&fade_animation);
     register_animation(&face_animation);
     register_animation(&rolling_text_animation);
     register_animation(&pulse_animation);
@@ -95,9 +100,10 @@ int main() {
             current_animation->tick();
 
             Delay_Ms(current_animation->tick_interval); // sleep 10ms to reduce cpu load
+            touchUpdate();
             
             // btn pressed at least once and more than MULTI_PRESS_SPEED ago
-            // press count is captured by the interrupt handler
+            // press count is captured by thea interrupt handler
             if (btn_cnt > 0 && millis() - btn_press > MULTI_PRESS_SPEED) {
                 if (btn_cnt == 4) { // go to sleep
                     btn_cnt = 0;
