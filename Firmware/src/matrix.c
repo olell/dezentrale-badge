@@ -97,7 +97,7 @@ void matrixDisplay() {
     // soft-pwm 
     for (tmp = 0; tmp <= MAX_BRIGHTNESS; tmp ++) {
         GPIOC->OUTDR = (tmp < cur_pix) ? out_register : 0;
-        asm volatile( "c.nop;c.nop;" );
+        //asm volatile( "c.nop;c.nop;" );
     }
 
     // prepare row/col addrs for next call
