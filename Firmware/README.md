@@ -20,16 +20,7 @@ Find instructions to install the required dependencies and toolchain here: [ch32
 
 ### 2. SDK
 
-Clone the SDK [ch32fun](https://github.com/cnlohr/ch32fun) alongside this repository as shown below:
-
-```
-.
-├── DezentraleBadge  # this repo
-│   ├── Firmware
-│   └── Hardware
-└── ch32fun          # sdk repo
-    └── ...
-```
+Run `git submodule update --init` to clone the ch32fun SDK
 
 ## Build & Flash
 
