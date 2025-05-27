@@ -1,7 +1,7 @@
 all : flash
 
 TARGET:=src/main
-CH32FUN:=../../ch32fun/ch32fun
+CH32FUN:=ch32fun/ch32fun
 TARGET_MCU:=CH32V003
 
 ADDITIONAL_C_FILES+=src/matrix.c src/animation.c src/systick.c src/touch.c
