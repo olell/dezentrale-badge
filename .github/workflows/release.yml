@@ -9,8 +9,28 @@ jobs:
       contents: write
       id-token: write
     steps:
-      - name: Build firmware
-        uses: ./.github/workflows/build-firmware.yml@main
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+          build-essential \
+          libnewlib-dev \
+          gcc-riscv64-unknown-elf \
+          libusb-1.0-0-dev \
+          libudev-dev
+      - name: Build
+        working-directory: Firmware
+        run: make build
+      - name: Upload main.bin
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-bin
+          path: Firmware/src/main.bin
+          if-no-files-found: error
       - name: Upload firmware binary to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
