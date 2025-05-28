@@ -24,7 +24,7 @@ void systickClear() {
     NVIC_ClearPendingIRQ(SysTicK_IRQn);
 }
 
-void SysTick_Handler(void) __attribute__((interrupt));
+void SysTick_Handler(void) __attribute__((interrupt)) __attribute__((section(".srodata"))) __attribute__((used));;
 void SysTick_Handler(void) {
 	SysTick->CMP += systick_interval;
 	SysTick->SR = 0x00000000;
