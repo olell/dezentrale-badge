@@ -1,5 +1,5 @@
 /**
- 
+
 Matrix Layout
 x/y 0  1  2  3  4  5
  0     #  #  #  #
@@ -7,7 +7,7 @@ x/y 0  1  2  3  4  5
  2  #  #  #  #  #  #
  3  #  #  #  #  #  #
  4  #  #  #  #  #  #
- 5     #  #  #  # 
+ 5     #  #  #  #
  6  S  G  L  K  P  W
 
 Legend:
@@ -30,6 +30,8 @@ Arms:
 
 #define WIDTH 6
 #define HEIGHT 7
+// PIXS must equal WIDTH * HEIGHT
+#define PIXS 42
 
 #define MAX_BRIGHTNESS 15
 
