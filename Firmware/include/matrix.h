@@ -33,7 +33,7 @@ Arms:
 // PIXS must equal WIDTH * HEIGHT
 #define PIXS 42
 
-#define MAX_BRIGHTNESS 35
+#define MAX_BRIGHTNESS 15
 
 void matrixInit();
 void matrixPowerOff();

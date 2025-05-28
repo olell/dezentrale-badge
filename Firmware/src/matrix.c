@@ -102,7 +102,5 @@ void matrixDisplay() {
     }
 
     // prepare row/col addrs for next call
-    if (++idx == PIXS) {
-        idx = 0;
-    }
+    if (++idx == PIXS) idx = 0;
 }
