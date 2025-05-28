@@ -88,6 +88,7 @@ uint8_t cur_pix;
 /**
  * @brief Displays the matrix contents
  */
+void matrixDisplay() __attribute__((section(".srodata"))) __attribute__((used));
 void matrixDisplay() {
     GPIOC->CFGLR = conf_reg_c_precalc[row][col];
     out_register = out_reg_c_precalc[row][col];
