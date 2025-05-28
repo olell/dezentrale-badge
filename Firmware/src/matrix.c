@@ -4,16 +4,17 @@
 
 // Initializes the pixel buffer with as many bits as required to
 // store all WIDTH*HEIGHT pixels (to the next integer bytes)
-uint8_t pixbuf[HEIGHT][WIDTH];
+uint8_t pixbuf[PIXS];
 
 // this array contains pre calculated values for the conf register
 // for every pixel, which are calculated once on init to save
 // calculation time while displaying the pixels
-uint32_t conf_reg_c_precalc[HEIGHT][WIDTH];
-uint32_t out_reg_c_precalc[HEIGHT][WIDTH];
+uint32_t conf_reg_c_precalc[PIXS];
+uint32_t out_reg_c_precalc[PIXS];
 
 uint8_t col;
 uint8_t row;
+uint8_t idx;
 
 /**
  * @brief Initializes the matrix
@@ -26,17 +27,17 @@ void matrixInit() {
         if (row_pin_index >= 5) row_pin_index ++; // pin PC5 doesn't exist
 
         for (col = 0; col < WIDTH; col ++) {
-            conf_reg_c_precalc[row][col] = 0; // clear the register
+            conf_reg_c_precalc[row*WIDTH+col] = 0; // clear the register
             if ((row == 0 || row == 5) && (col == 0 || col == 5)) continue; // non-existing leds
 
             col_pin_index = col;
             if (col_pin_index >= row_pin_index) col_pin_index ++;
             if (col_pin_index >= 5) col_pin_index ++;
 
-            conf_reg_c_precalc[row][col] = (uint32_t)2<<(4*row_pin_index) | // row pin as output
+            conf_reg_c_precalc[row*WIDTH+col] = (uint32_t)2<<(4*row_pin_index) | // row pin as output
                                            (uint32_t)2<<(4*col_pin_index);  // col pin as output
             
-            out_reg_c_precalc[row][col] = (uint32_t)1<<col_pin_index; // col pin high
+            out_reg_c_precalc[row*WIDTH+col] = (uint32_t)1<<col_pin_index; // col pin high
 
             
         }
@@ -58,7 +59,7 @@ void matrixPowerOff() {
  */
 void matrixSetPixel(uint8_t x, uint8_t y, uint8_t v) {
     if (x >= WIDTH || y >= HEIGHT) return;
-    pixbuf[y][x] = v;
+    pixbuf[y*WIDTH+x] = v;
 }
 
 /**
@@ -66,7 +67,7 @@ void matrixSetPixel(uint8_t x, uint8_t y, uint8_t v) {
  */
 uint8_t matrixGetPixel(uint8_t x, uint8_t y) {
     if (x >= WIDTH || y >= HEIGHT) return 0;
-    return pixbuf[y][x];
+    return pixbuf[y*WIDTH+x];
 }
 
 /**
@@ -90,22 +91,18 @@ uint8_t cur_pix;
  */
 void matrixDisplay() __attribute__((section(".srodata"))) __attribute__((used));
 void matrixDisplay() {
-    GPIOC->CFGLR = conf_reg_c_precalc[row][col];
-    out_register = out_reg_c_precalc[row][col];
+    GPIOC->CFGLR = conf_reg_c_precalc[idx];
+    out_register = out_reg_c_precalc[idx];
     
-    cur_pix = pixbuf[row][col];
+    cur_pix = pixbuf[idx];
     
     // soft-pwm 
     for (tmp = 0; tmp <= MAX_BRIGHTNESS; tmp ++) {
         GPIOC->OUTDR = (tmp < cur_pix) ? out_register : 0;
-        //asm volatile( "c.nop;c.nop;" );
     }
 
     // prepare row/col addrs for next call
-    if (++col == WIDTH) {
-        col = 0;
-        if (++row == HEIGHT) {
-            row = 0;
-        }
+    if (++idx == PIXS) {
+        idx = 0;
     }
 }
