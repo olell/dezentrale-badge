@@ -37,7 +37,8 @@ static const animation_t fade_animation = {
     .init = fade_init,
     .tick = fade_tick,
     .on_press = fade_on_press,
-    .tick_interval = 100
+    .tick_interval = 100,
+    .flags = ANIM_USES_TOUCH
 };
 
 #endif
