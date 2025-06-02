@@ -19,7 +19,9 @@ touch_channel_t channels[TOUCH_CHANNELS] = {
 };
 touch_reading_t readings[TOUCH_CHANNELS];
 
-
+/**
+ * @brief initialises the capacitive touch
+ */
 void touchInit() {
     RCC->APB2PCENR |= RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOC | RCC_APB2Periph_ADC1;
 	InitTouchADC();
@@ -31,6 +33,9 @@ void touchInit() {
     }
 }
 
+/**
+ * @brief reads the capacitive touch pins
+ */
 void touchUpdate() {
     for (uint8_t i = 0; i < TOUCH_CHANNELS; i ++) {
         touch_reading_t *r = &readings[i];
@@ -44,12 +49,15 @@ void touchUpdate() {
     }
 }
 
+/**
+ * @brief returns the normalized value for the selected touch channel
+ */
 uint8_t touchRead(uint8_t channel) {
     if (channel >= TOUCH_CHANNELS) return 0;
 
     touch_reading_t *r = &readings[channel];
 
-    // check for plausible baseline/max ration
+    // check for plausible baseline/max ratio
     float touch_diff = 1 - (r->max / r->baseline);
     float norm;
     if (FABS(touch_diff) < 0.2) { // invalid reading

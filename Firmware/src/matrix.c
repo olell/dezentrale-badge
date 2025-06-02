@@ -55,15 +55,15 @@ void matrixPowerOff() {
 }
 
 /**
- * @brief Sets the pixel at x, y to v (0/1)
+ * @brief Sets the pixel at x, y to a value between 0 and `MAX_BRIGHTNESS`
  */
 void matrixSetPixel(uint8_t x, uint8_t y, uint8_t v) {
-    if (x >= WIDTH || y >= HEIGHT) return;
+    if (x >= WIDTH || y >= HEIGHT || v >= MAX_BRIGHTNESS) return;
     pixbuf[y*WIDTH+x] = v;
 }
 
 /**
- * @brief Returns the pixel at x, y
+ * @brief Returns the pixel value at x, y
  */
 uint8_t matrixGetPixel(uint8_t x, uint8_t y) {
     if (x >= WIDTH || y >= HEIGHT) return 0;
