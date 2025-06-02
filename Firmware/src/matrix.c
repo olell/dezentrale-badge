@@ -82,23 +82,21 @@ void matrixClear() {
 }
 
 
-uint32_t out_register;
 uint8_t tmp;
-uint8_t cur_pix;
 
 /**
  * @brief Displays the matrix contents
  */
-void matrixDisplay() __attribute__((section(".srodata"))) __attribute__((used));
-void matrixDisplay() {
+inline void matrixDisplay() __attribute__((section(".srodata"))) __attribute__((used)) __attribute__((always_inline));
+inline void matrixDisplay() {
     GPIOC->CFGLR = conf_reg_c_precalc[idx];
-    out_register = out_reg_c_precalc[idx];
-    
-    cur_pix = pixbuf[idx];
+
+    register uint32_t out_reg asm("a0") = out_reg_c_precalc[idx];
+    register uint32_t pix_reg asm("a1") = pixbuf[idx];
     
     // soft-pwm 
     for (tmp = 0; tmp <= MAX_BRIGHTNESS; tmp ++) {
-        GPIOC->OUTDR = (tmp < cur_pix) ? out_register : 0;
+        GPIOC->OUTDR = (tmp < pix_reg) ? out_reg : 0;
     }
 
     // prepare row/col addrs for next call
