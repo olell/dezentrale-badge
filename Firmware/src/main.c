@@ -100,13 +100,13 @@ int main() {
             // Matrix animation
             current_animation->tick();
 
-            Delay_Ms(current_animation->tick_interval); // sleep 10ms to reduce cpu load
+            Delay_Ms(current_animation->tick_interval);
             touchUpdate();
             
             // btn pressed at least once and more than MULTI_PRESS_SPEED ago
             // press count is captured by thea interrupt handler
             if (btn_cnt > 0 && millis() - btn_press > MULTI_PRESS_SPEED) {
-                if (btn_cnt == 5) { // go to bootloader (?)
+                if (btn_cnt == 5) { // go to bootloader blink animation
                     current_animation = &bootloader_animation;
                     current_animation->init();
                 }
@@ -127,6 +127,10 @@ int main() {
             }
 
         }
+
+        /*
+         * SLEEP CODE
+         */
 
         // disable the systick & turn off the matrix
         systickClear();
