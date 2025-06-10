@@ -21,10 +21,12 @@ static void fade_init(void) {
 }
 
 static void fade_tick() {
-    uint8_t touch_value = touchRead(0) >> 4;
+    uint8_t touch_value_a = touchRead(0) >> 4;
+    uint8_t touch_value_b = touchRead(1) >> 4;
     for (uint8_t y = 0; y < HEIGHT; y ++) {
-        for (uint8_t x = 0; x < WIDTH; x ++) {
-            matrixSetPixel(x, y, touch_value);
+        for (uint8_t x = 0; x < 3; x ++) {
+            matrixSetPixel(x, y, touch_value_a);
+            matrixSetPixel(x+3, y, touch_value_b);
         }
     }
 }
@@ -37,7 +39,8 @@ static const animation_t fade_animation = {
     .init = fade_init,
     .tick = fade_tick,
     .on_press = fade_on_press,
-    .tick_interval = 100
+    .tick_interval = 100,
+    .flags = ANIM_USES_TOUCH
 };
 
 #endif

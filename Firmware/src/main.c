@@ -101,7 +101,9 @@ int main() {
             current_animation->tick();
 
             Delay_Ms(current_animation->tick_interval);
-            touchUpdate();
+            if (current_animation->flags & ANIM_USES_TOUCH) {
+                touchUpdate();
+            }
             
             // btn pressed at least once and more than MULTI_PRESS_SPEED ago
             // press count is captured by thea interrupt handler
