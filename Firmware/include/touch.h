@@ -5,9 +5,9 @@
 #include <ch32fun.h>
 
 typedef struct {
-    float current;
-    float baseline;
-    float max;
+    int current;
+    int baseline;
+    int max;
 } touch_reading_t;
 
 typedef struct {
